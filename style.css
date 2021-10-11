@@ -1,0 +1,17 @@
+body {
+    font-family: sans;
+    font-size: 12pt;
+}
+
+h1 {
+    font-size: 14pt;
+}
+
+h2 {
+    font-size: 12pt;
+    display: inline;
+}
+
+p {
+    display: inline;
+}
