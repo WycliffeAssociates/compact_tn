@@ -54,14 +54,25 @@ def process_tn(tn_dir: str) -> None:
         books = json.load(books_stream)
 
     # Process books
+    book_count = 0
     for book_slug in books:
-        process_book(
-            book_slug,
+
+        # Process book
+        book_count += 1
+        output = process_book(
             books[book_slug]["name"],
             tn_dir + "/" + book_slug)
 
-def process_book(book_slug:str, book_name: str, book_dir: str) -> None:
+        # Write output
+        filename = f"{book_count:02}-{book_slug}.md"
+        with open(filename, "w") as output_stream:
+            output_stream.write(output)
+
+
+def process_book(book_name: str, book_dir: str) -> str:
     """ Process a book directory """
+
+    logging.debug("Processing %s...", book_name)
 
     # Abort on error
     if not os.path.isdir(book_dir):
@@ -70,10 +81,8 @@ def process_book(book_slug:str, book_name: str, book_dir: str) -> None:
 
     # Read files
     output = f"# {book_name}\n\n"
-    book_count = 0
     verse_file_regex = re.compile("^" + book_dir + r"/([0-9]+)/([0-9]+)\.md")
-    for md_file in glob.glob(book_dir + "/**/*.md", recursive=True):
-        book_count += 1
+    for md_file in sorted(glob.glob(book_dir + "/**/*.md", recursive=True)):
         match = verse_file_regex.match(md_file)
         if not match:
             continue
@@ -83,10 +92,9 @@ def process_book(book_slug:str, book_name: str, book_dir: str) -> None:
         output += process_contents(chapter_num, verse_num, contents)
         output += "<br/>\n\n"
 
-    # Write output
-    filename = f"{book_count:02}-{book_slug}.md"
-    with open(filename, "w") as output_stream:
-        output_stream.write(output)
+    # Done
+    return output
+
 
 def process_contents(
         chapter_num: int,
