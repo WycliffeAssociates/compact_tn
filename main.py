@@ -90,7 +90,7 @@ def process_book(book_name: str, book_dir: str) -> str:
         verse_num = int(match[2])
         contents = pathlib.Path(md_file).read_text()
         output += process_contents(chapter_num, verse_num, contents)
-        output += "<br/>\n\n"
+        # output += "<br/>\n\n"
 
     # Done
     return output
@@ -115,7 +115,7 @@ def process_contents(
     contents = SEE_PHRASE.sub("", contents)
 
     # Remove markdown links
-    contents = MARKDOWN_LINK.sub("", contents)
+    # contents = MARKDOWN_LINK.sub("", contents)
 
     # Add contents
     output += contents

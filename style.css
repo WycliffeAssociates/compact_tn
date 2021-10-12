@@ -15,3 +15,8 @@ h2 {
 p {
     display: inline;
 }
+
+p::after {
+    content: "\A";
+    white-space: pre;
+}
