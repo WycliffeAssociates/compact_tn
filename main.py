@@ -15,7 +15,7 @@ import yaml
 
 HEADER_1 = re.compile(r"(^|\n)# ", re.MULTILINE)
 SEE_PHRASE = re.compile(r"\(See:[^)]*\)")
-MARKDOWN_LINK = re.compile(r"\(?\[[^]]*\]\([^)]*\)\)?")
+MARKDOWN_LINK = re.compile(r"\(?\[([^]]*)\]\([^)]*\)\)?")
 
 def main() -> None:
     """ Main function """
@@ -115,7 +115,7 @@ def process_contents(
     contents = SEE_PHRASE.sub("", contents)
 
     # Remove markdown links
-    # contents = MARKDOWN_LINK.sub("", contents)
+    contents = MARKDOWN_LINK.sub("\\1", contents)
 
     # Add contents
     output += contents

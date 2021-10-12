@@ -19,7 +19,7 @@ run:
 		done
 
 run-dev:
-	export FILE=56-tit.md \
+	export FILE=40-mat.md \
 	&& python3 main.py \
 	&& pandoc \
 		--standalone \
