@@ -5,7 +5,6 @@
 from typing import List
 
 import glob
-import json
 import logging
 import os
 import pathlib
@@ -55,13 +54,17 @@ def main() -> None:
 def process_tn(tn_dir: str, book_ids: List[str]) -> None:
     """Create compact TN"""
 
-    # Get book list
-    with open("books.json") as books_stream:
-        books = json.load(books_stream)
+    # Read manifest
+    with open(tn_dir + "/manifest.yaml") as manifest_stream:
+        manifest = yaml.load(manifest_stream, Loader=yaml.SafeLoader)
+        books = manifest["projects"]
 
     # Process books
     book_count = 0
-    for book_slug in books:
+    for book in books:
+
+        book_slug = book["identifier"]
+        book_name = book["title"]
 
         # Skip book if necessary
         if book_ids and book_slug not in book_ids:
@@ -70,9 +73,7 @@ def process_tn(tn_dir: str, book_ids: List[str]) -> None:
 
         # Process book
         book_count += 1
-        output = process_book(
-            books[book_slug]["name"], tn_dir + "/" + book_slug
-        )
+        output = process_book(book_name, tn_dir + "/" + book_slug)
 
         # Write output
         filename = f"{book_count:02}-{book_slug}.md"

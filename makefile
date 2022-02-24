@@ -21,7 +21,7 @@ run:
 	done
 
 edit:
-	${EDITOR} main.py makefile config.yaml style.css books.json
+	${EDITOR} main.py makefile config.yaml style.css
 
 lint:
 	mypy --disallow-untyped-defs *.py
