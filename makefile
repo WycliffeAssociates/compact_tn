@@ -1,3 +1,5 @@
+.PHONY: run run-dev edit lint watch-lint watch-run-dev clean
+
 run:
 	python3 main.py
 	for FILE in *.md; do \
@@ -37,6 +39,8 @@ run-dev:
 		$${FILE}.html $${FILE}.pdf \
 	&& xdg-open $${FILE}.pdf
 
+edit:
+	${EDITOR} main.py makefile config.yaml style.css books.json
 
 lint:
 	mypy --disallow-untyped-defs *.py

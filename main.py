@@ -17,14 +17,16 @@ HEADER_1 = re.compile(r"(^|\n)# ", re.MULTILINE)
 SEE_PHRASE = re.compile(r"\(See:[^)]*\)")
 MARKDOWN_LINK = re.compile(r"\(?\[([^]]*)\]\([^)]*\)\)?")
 
+
 def main() -> None:
-    """ Main function """
+    """Main function"""
 
     # Set up logging
     logging_level = logging.DEBUG
     logging.basicConfig(
         format="%(levelname)s: %(module)s/%(funcName)s:%(lineno)d: %(message)s",
-        level=logging_level)
+        level=logging_level,
+    )
 
     # Load config
     with open("config.yaml") as config_stream:
@@ -44,10 +46,12 @@ def main() -> None:
         "Done. Elapsed: %.2f s, obj: %.2f MB, script: %.2f MB",
         time.time() - start_time,
         (total_mem - base_mem) / 1000.0,
-        total_mem / 1000.0)
+        total_mem / 1000.0,
+    )
+
 
 def process_tn(tn_dir: str) -> None:
-    """ Create compact TN """
+    """Create compact TN"""
 
     # Get book list
     with open("books.json") as books_stream:
@@ -60,8 +64,8 @@ def process_tn(tn_dir: str) -> None:
         # Process book
         book_count += 1
         output = process_book(
-            books[book_slug]["name"],
-            tn_dir + "/" + book_slug)
+            books[book_slug]["name"], tn_dir + "/" + book_slug
+        )
 
         # Write output
         filename = f"{book_count:02}-{book_slug}.md"
@@ -70,7 +74,7 @@ def process_tn(tn_dir: str) -> None:
 
 
 def process_book(book_name: str, book_dir: str) -> str:
-    """ Process a book directory """
+    """Process a book directory"""
 
     logging.debug("Processing %s...", book_name)
 
@@ -81,8 +85,12 @@ def process_book(book_name: str, book_dir: str) -> str:
 
     # Read files
     output = f"# {book_name}\n\n"
-    verse_file_regex = re.compile("^" + book_dir + r"/([0-9]+)/([0-9]+)\.md")
-    for md_file in sorted(glob.glob(book_dir + "/**/*.md", recursive=True)):
+    verse_file_regex = re.compile(
+        "^" + book_dir + r"/([0-9]+)/([0-9]+)\.md"
+    )
+    for md_file in sorted(
+        glob.glob(book_dir + "/**/*.md", recursive=True)
+    ):
         match = verse_file_regex.match(md_file)
         if not match:
             continue
@@ -97,10 +105,9 @@ def process_book(book_name: str, book_dir: str) -> str:
 
 
 def process_contents(
-        chapter_num: int,
-        verse_num: int,
-        contents: str) -> str:
-    """ Process single verse file. """
+    chapter_num: int, verse_num: int, contents: str
+) -> str:
+    """Process single verse file."""
 
     # Init
     output = ""
