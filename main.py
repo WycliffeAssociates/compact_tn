@@ -83,7 +83,7 @@ def process_tn(tn_dir: str, book_ids: List[str]) -> None:
 def process_book(book_name: str, book_dir: str) -> str:
     """Process a book directory"""
 
-    logging.debug("Processing %s...", book_name)
+    logging.debug("Processing %s in %s...", book_name, book_dir)
 
     # Abort on error
     if not os.path.isdir(book_dir):
