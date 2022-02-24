@@ -92,7 +92,7 @@ def process_book(book_name: str, book_dir: str) -> str:
         raise FileNotFoundError(book_dir)
 
     # Read files
-    output = f"# {book_name}\n\n"
+    output = f"\n# {book_name}\n\n"
     verse_file_regex = re.compile(
         "^" + book_dir + r"/([0-9]+)/([0-9]+)\.md"
     )
@@ -121,7 +121,7 @@ def process_contents(
     output = ""
 
     # Add reference
-    output += f"# {chapter_num}:{verse_num}\n"
+    output += f"\n# {chapter_num}:{verse_num}\n"
 
     # Increment headers
     contents = HEADER_1.sub("\n## ", contents)
