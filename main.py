@@ -60,11 +60,10 @@ def process_tn(tn_dir: str, book_ids: List[str]) -> None:
         books = manifest["projects"]
 
     # Process books
-    book_count = 0
     for book in books:
 
         book_slug = book["identifier"]
-        book_name = book["title"]
+        book_sort = book["sort"]
 
         # Skip book if necessary
         if book_ids and book_slug not in book_ids:
@@ -72,11 +71,10 @@ def process_tn(tn_dir: str, book_ids: List[str]) -> None:
             continue
 
         # Process book
-        book_count += 1
-        output = process_book(book_name, tn_dir + "/" + book_slug)
+        output = process_book(book["title"], tn_dir + "/" + book["path"])
 
         # Write output
-        filename = f"{book_count:02}-{book_slug}.md"
+        filename = f"{book_sort:02}-{book_slug}.md"
         with open(filename, "w") as output_stream:
             logging.debug("Writing %s...", filename)
             output_stream.write(output)
