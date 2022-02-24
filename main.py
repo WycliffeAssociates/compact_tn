@@ -2,6 +2,8 @@
 
 """ Create compact TN """
 
+from typing import List
+
 import glob
 import json
 import logging
@@ -38,7 +40,7 @@ def main() -> None:
     base_mem = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
 
     # Get to work
-    process_tn(config["tn_dir"])
+    process_tn(config["tn_dir"], config["book_ids"])
 
     # Report on performance
     total_mem = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
@@ -50,7 +52,7 @@ def main() -> None:
     )
 
 
-def process_tn(tn_dir: str) -> None:
+def process_tn(tn_dir: str, book_ids: List[str]) -> None:
     """Create compact TN"""
 
     # Get book list
@@ -61,6 +63,11 @@ def process_tn(tn_dir: str) -> None:
     book_count = 0
     for book_slug in books:
 
+        # Skip book if necessary
+        if book_ids and book_slug not in book_ids:
+            logging.info("Skipping %s, not in config", book_slug)
+            continue
+
         # Process book
         book_count += 1
         output = process_book(
@@ -70,6 +77,7 @@ def process_tn(tn_dir: str) -> None:
         # Write output
         filename = f"{book_count:02}-{book_slug}.md"
         with open(filename, "w") as output_stream:
+            logging.debug("Writing %s...", filename)
             output_stream.write(output)
 
 

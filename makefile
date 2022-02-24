@@ -18,26 +18,7 @@ run:
 			--footer-center "$${FILE} - page [page] of [topage]" \
 			--enable-local-file-access \
 			$${FILE}.html $${FILE}.pdf; \
-		done
-
-run-dev:
-	export FILE=40-mat.md \
-	&& python3 main.py \
-	&& pandoc \
-		--standalone \
-		--css style.css \
-		--metadata pagetitle=$${FILE} \
-		--output $${FILE}.html \
-		$${FILE} \
-	&& wkhtmltopdf \
-		--margin-left 0.5in \
-		--margin-right 0.5in \
-		--margin-top 0.5in \
-		--margin-bottom 0.5in \
-		--footer-center "$${FILE} - page [page] of [topage]" \
-		--enable-local-file-access \
-		$${FILE}.html $${FILE}.pdf \
-	&& xdg-open $${FILE}.pdf
+	done
 
 edit:
 	${EDITOR} main.py makefile config.yaml style.css books.json
