@@ -1,7 +1,7 @@
 # Directory where tn source can be found
-tn_dir: "/home/oliverc/shared/repos/sw_tn"
+tn_dir: "/home/oliverc/shared/repos/en_tn"
 
 # Book ids to render.  If empty, render all books.
 # e.g. book_ids: ["mat", "tit"] # Just Matthew and Titus
 # e.g. book_ids: []             # All books
-book_ids: []
+book_ids: [mat]
