@@ -15,7 +15,10 @@ import time
 import yaml
 
 HEADER_1 = re.compile(r"(^|\n)# ", re.MULTILINE)
-SEE_PHRASE = re.compile(r"\(See:[^)]*\)")
+SEE_WORDS = ["See", "Ser", "Ver", "Vea", "Véase"]
+SEE_PHRASE = re.compile(
+    r"\(\s*(" + "|".join(SEE_WORDS) + "):?[^)]*\)", re.IGNORECASE
+)
 MARKDOWN_LINK = re.compile(r"\(?\[([^]]*)\]\([^)]*\)\)?")
 
 
