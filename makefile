@@ -1,6 +1,6 @@
 .PHONY: run
 run:
-	# e.g. make run 2>&1 | ccze -A
+	# Example: make run 2>&1 | ccze -A
 	# Make sure output dir is set.
 	test -n "$(COMPACT_TN_OUTPUT_DIR)" # $$COMPACT_TN_OUTPUT_DIR
 	# Copy styles to output directory.

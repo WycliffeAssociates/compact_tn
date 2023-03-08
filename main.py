@@ -2,7 +2,6 @@
 
 """ Create compact TN """
 
-from typing import List
 
 import glob
 import json
@@ -13,12 +12,21 @@ import re
 import resource
 import time
 
+from typing import Dict, List
+from typing_extensions import TypedDict
+
 import yaml
 
+# Types for mypy
+BookInfo = TypedDict("BookInfo", { 'name': str, 'num': int, 'anth': str })
+BookInfoDict = Dict[str, BookInfo]
+Config = TypedDict("Config", {"tn_dir": str, "book_ids": List[str]})
+
+# Constants
 HEADER_1 = re.compile(r"(^|\n)# ", re.MULTILINE)
 SEE_WORDS = ["See", "Ser", "Ver", "Vea", "Véase"]
 SEE_PHRASE = re.compile(
-    r"\(\s*(" + "|".join(SEE_WORDS) + "):?[^)]*\)", re.IGNORECASE
+    r"\(\s*(" + "|".join(SEE_WORDS) + r"):?[^)]*\)", re.IGNORECASE
 )
 MARKDOWN_LINK = re.compile(r"\(?\[([^]]*)\]\([^)]*\)\)?")
 
@@ -34,18 +42,20 @@ def main() -> None:
     )
 
     # Load config
-    with open("config.yaml") as config_stream:
-        config = yaml.load(config_stream, Loader=yaml.SafeLoader)
+    with open("config.yaml", encoding="utf-8") as config_stream:
+        config: Config = yaml.load(config_stream, Loader=yaml.SafeLoader)
     logging.debug("Config: %s", config)
 
     # Get output dir
     output_dir = os.getenv("COMPACT_TN_OUTPUT_DIR")
+    if not output_dir:
+        raise ValueError("Please set $COMPACT_TN_OUTPUT_DIR")
     logging.debug("Output dir: %s", output_dir)
 
     # Load Bible books
-    with open("books.json") as books_stream:
-        books_info = json.load(books_stream)
-    logging.debug(f"Loaded {len(books_info)} books.")
+    with open("books.json", encoding="utf-8") as books_stream:
+        books_info: BookInfoDict = json.load(books_stream)
+    logging.debug("Loaded %d books.", len(books_info))
 
     # Track runtime
     start_time = time.time()
@@ -64,12 +74,15 @@ def main() -> None:
     )
 
 
-def process_tn(tn_dir: str, book_ids: List[str], output_dir: str,
-        books_info) -> None:
+def process_tn(
+        tn_dir: str,
+        book_ids: List[str],
+        output_dir: str,
+        books_info: BookInfoDict) -> None:
     """Create compact TN"""
 
     # Read manifest
-    with open(tn_dir + "/manifest.yaml") as manifest_stream:
+    with open(tn_dir + "/manifest.yaml", encoding="utf-8") as manifest_stream:
         manifest = yaml.load(manifest_stream, Loader=yaml.SafeLoader)
         books = manifest["projects"]
 
@@ -77,7 +90,6 @@ def process_tn(tn_dir: str, book_ids: List[str], output_dir: str,
     for book in books:
 
         book_slug = book["identifier"]
-        book_sort = book["sort"]
 
         # Skip book if necessary
         if book_ids and book_slug not in book_ids:
@@ -94,7 +106,7 @@ def process_tn(tn_dir: str, book_ids: List[str], output_dir: str,
 
         # Write output
         filename = f"{output_dir}/{book_info['num']:02}-{book_slug}.md"
-        with open(filename, "w") as output_stream:
+        with open(filename, "w", encoding="utf-8") as output_stream:
             logging.debug("Writing %s...", filename)
             output_stream.write(output)
 
@@ -122,7 +134,7 @@ def process_book(book_name: str, book_dir: str) -> str:
             continue
         chapter_num = int(match[1])
         verse_num = int(match[2])
-        contents = pathlib.Path(md_file).read_text()
+        contents = pathlib.Path(md_file).read_text(encoding="utf-8")
         output += process_contents(chapter_num, verse_num, contents)
         # output += "<br/>\n\n"
 
