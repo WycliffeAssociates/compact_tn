@@ -37,8 +37,18 @@ def main() -> None:
     # Set up logging
     logging_level = logging.DEBUG
     logging.basicConfig(
-        format="%(levelname)s: %(module)s/%(funcName)s:%(lineno)d: %(message)s",
-        level=logging_level,
+        format=(
+	        # Timestamp
+            "%(asctime)s "
+            # DEBUG, INFO, etc.
+            "%(levelname)s "
+            # module/function:25:
+            "%(module)s/%(funcName)s:%(lineno)d: "
+            # Message
+            "%(message)s"
+        ),
+        # Set minimum level (logging.WARNING if not given)
+        level=logging.DEBUG,
     )
 
     # Load config
