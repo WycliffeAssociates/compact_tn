@@ -18,7 +18,7 @@ from typing_extensions import TypedDict
 import yaml
 
 # Types for mypy
-BookInfo = TypedDict("BookInfo", { 'name': str, 'num': int, 'anth': str })
+BookInfo = TypedDict("BookInfo", {"name": str, "num": int, "anth": str})
 BookInfoDict = Dict[str, BookInfo]
 Config = TypedDict("Config", {"tn_dir": str, "book_ids": List[str]})
 
@@ -38,7 +38,7 @@ def main() -> None:
     logging_level = logging.DEBUG
     logging.basicConfig(
         format=(
-	        # Timestamp
+            # Timestamp
             "%(asctime)s "
             # DEBUG, INFO, etc.
             "%(levelname)s "
@@ -72,7 +72,9 @@ def main() -> None:
     base_mem = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
 
     # Get to work
-    process_tn(config["tn_dir"], config["book_ids"], output_dir, books_info)
+    process_tn(
+        config["tn_dir"], config["book_ids"], output_dir, books_info
+    )
 
     # Report on performance
     total_mem = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
@@ -85,14 +87,17 @@ def main() -> None:
 
 
 def process_tn(
-        tn_dir: str,
-        book_ids: List[str],
-        output_dir: str,
-        books_info: BookInfoDict) -> None:
+    tn_dir: str,
+    book_ids: List[str],
+    output_dir: str,
+    books_info: BookInfoDict,
+) -> None:
     """Create compact TN"""
 
     # Read manifest
-    with open(tn_dir + "/manifest.yaml", encoding="utf-8") as manifest_stream:
+    with open(
+        tn_dir + "/manifest.yaml", encoding="utf-8"
+    ) as manifest_stream:
         manifest = yaml.load(manifest_stream, Loader=yaml.SafeLoader)
         books = manifest["projects"]
 
@@ -108,7 +113,9 @@ def process_tn(
 
         # Get book info
         if book_slug not in books_info:
-            raise ValueError(f"Book '{book_slug}' not found in books.json.")
+            raise ValueError(
+                f"Book '{book_slug}' not found in books.json."
+            )
         book_info = books_info[book_slug]
 
         # Process book
