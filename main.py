@@ -35,7 +35,6 @@ def main() -> None:
     """Main function"""
 
     # Set up logging
-    logging_level = logging.DEBUG
     logging.basicConfig(
         format=(
             # Timestamp
