@@ -38,17 +38,21 @@ def main() -> None:
         config = yaml.load(config_stream, Loader=yaml.SafeLoader)
     logging.debug("Config: %s", config)
 
+    # Get output dir
+    output_dir = os.getenv("COMPACT_TN_OUTPUT_DIR")
+    logging.debug("Output dir: %s", output_dir)
+
     # Load Bible books
     with open("books.json") as books_stream:
-        books = json.load(books_stream)
-    logging.debug("Books: %s", books)
+        books_info = json.load(books_stream)
+    logging.debug(f"Loaded {len(books_info)} books.")
 
     # Track runtime
     start_time = time.time()
     base_mem = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
 
     # Get to work
-    process_tn(config["tn_dir"], config["book_ids"])
+    process_tn(config["tn_dir"], config["book_ids"], output_dir, books_info)
 
     # Report on performance
     total_mem = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
@@ -60,7 +64,8 @@ def main() -> None:
     )
 
 
-def process_tn(tn_dir: str, book_ids: List[str]) -> None:
+def process_tn(tn_dir: str, book_ids: List[str], output_dir: str,
+        books_info) -> None:
     """Create compact TN"""
 
     # Read manifest
@@ -79,11 +84,16 @@ def process_tn(tn_dir: str, book_ids: List[str]) -> None:
             logging.info("Skipping %s, not in config", book_slug)
             continue
 
+        # Get book info
+        if book_slug not in books_info:
+            raise ValueError(f"Book '{book_slug}' not found in books.json.")
+        book_info = books_info[book_slug]
+
         # Process book
         output = process_book(book["title"], tn_dir + "/" + book["path"])
 
         # Write output
-        filename = f"{book_sort:02}-{book_slug}.md"
+        filename = f"{output_dir}/{book_info['num']:02}-{book_slug}.md"
         with open(filename, "w") as output_stream:
             logging.debug("Writing %s...", filename)
             output_stream.write(output)
