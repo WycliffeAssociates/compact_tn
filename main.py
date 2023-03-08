@@ -5,6 +5,7 @@
 from typing import List
 
 import glob
+import json
 import logging
 import os
 import pathlib
@@ -36,6 +37,11 @@ def main() -> None:
     with open("config.yaml") as config_stream:
         config = yaml.load(config_stream, Loader=yaml.SafeLoader)
     logging.debug("Config: %s", config)
+
+    # Load Bible books
+    with open("books.json") as books_stream:
+        books = json.load(books_stream)
+    logging.debug("Books: %s", books)
 
     # Track runtime
     start_time = time.time()
