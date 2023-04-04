@@ -151,7 +151,7 @@ def process_book(book_name: str, book_dir: str) -> str:
         chapter_num = int(match[1])
         verse_num = int(match[2])
         contents = pathlib.Path(md_file).read_text(encoding="utf-8")
-        output += process_contents(chapter_num, verse_num, contents)
+        output += process_contents(book_name, chapter_num, verse_num, contents)
         # output += "<br/>\n\n"
 
     # Done
@@ -159,7 +159,10 @@ def process_book(book_name: str, book_dir: str) -> str:
 
 
 def process_contents(
-    chapter_num: int, verse_num: int, contents: str
+    book_name: str,
+    chapter_num: int,
+    verse_num: int,
+    contents: str
 ) -> str:
     """Process single verse file."""
 
@@ -167,7 +170,7 @@ def process_contents(
     output = ""
 
     # Add reference
-    output += f"\n# {chapter_num}:{verse_num}\n"
+    output += f"\n# {book_name} {chapter_num}:{verse_num}\n"
 
     # Increment headers
     contents = HEADER_1.sub("\n## ", contents)
