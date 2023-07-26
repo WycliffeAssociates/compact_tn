@@ -137,8 +137,17 @@ def process_book(book_name: str, book_dir: str) -> str:
         logging.error("Error: %s is not a directory.", book_dir)
         raise FileNotFoundError(book_dir)
 
-    # Read files
+    # Write book title
     output = f"\n# {book_name}\n\n"
+
+    # Process intro if present
+    intro_filename = book_dir + "/front/intro.md"
+    if os.path.exists(intro_filename):
+        logging.debug("Found intro file: %s", intro_filename)
+        contents = pathlib.Path(intro_filename).read_text(encoding="utf-8")
+        output += contents
+
+    # Read files
     verse_file_regex = re.compile(
         "^" + book_dir + r"/([0-9]+)/([0-9]+)\.md"
     )
